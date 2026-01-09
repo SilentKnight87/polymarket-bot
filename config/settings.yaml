@@ -1,0 +1,22 @@
+polymarket:
+  api_key: ${POLYMARKET_API_KEY}
+  wallet_address: ${WALLET_ADDRESS}
+
+trading:
+  mode: paper  # backtest, paper, live
+  bankroll: 500.0
+  max_bet_pct: 0.05
+  max_daily_loss_pct: 0.10
+  min_edge: 0.05
+  kelly_fraction: 0.5
+
+news:
+  sources:
+    - rss_politics
+    - rss_crypto
+  check_interval_seconds: 60
+
+strategies:
+  news_speed:
+    enabled: true
+    weight: 1.0
