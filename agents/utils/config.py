@@ -94,10 +94,13 @@ def _load_yaml(path: Path, defaults: Dict[str, Any]) -> Dict[str, Any]:
 
 
 class Config:
-    def __init__(self, config_path: str = "config/settings.yaml") -> None:
+    def __init__(self, config_path: str = "config/settings.yaml", overrides: Dict[str, Any] | None = None) -> None:
+        self._config_path = config_path
         if load_dotenv is not None:
             load_dotenv(_repo_root() / ".env")
         self._settings = _load_yaml(_resolve_path(config_path), _DEFAULT_SETTINGS)
+        if overrides:
+            self._settings = _deep_merge(self._settings, overrides)
         self._strategies = _load_yaml(
             _resolve_path("config/strategies.yaml"), _DEFAULT_STRATEGIES
         )
@@ -133,3 +136,12 @@ class Config:
     @property
     def strategies(self) -> Dict[str, Any]:
         return self._strategies
+
+    @property
+    def check_interval_seconds(self) -> int:
+        return int(self._settings.get("news", {}).get("check_interval_seconds", 60))
+
+    def with_trading_mode(self, mode: str) -> "Config":
+        normalized = str(mode).strip().lower()
+        overrides = {"trading": {"mode": normalized}}
+        return Config(config_path=self._config_path, overrides=overrides)

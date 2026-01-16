@@ -7,6 +7,12 @@ from agents.connectors.news import News
 from agents.application.trade import Trader
 from agents.application.executor import Executor
 from agents.application.creator import Creator
+from agents.application.agent_loop import AgentLoop
+from agents.tracking.backtest import BacktestRunner
+from agents.strategies.news_speed import NewsSpeedStrategy
+from agents.utils.config import Config
+
+from datetime import datetime
 
 app = typer.Typer()
 polymarket = Polymarket()
@@ -122,6 +128,93 @@ def run_autonomous_trader() -> None:
     """
     trader = Trader()
     trader.one_best_trade()
+
+
+@app.command()
+def run(mode: str = "paper") -> None:
+    """Start the agent loop (paper mode recommended)."""
+    config = Config().with_trading_mode(mode)
+    loop = AgentLoop(config)
+    print(f"Starting agent loop in {config.trading_mode} mode...")
+    loop.run()
+
+
+@app.command()
+def tick(mode: str = "paper") -> None:
+    """Run a single agent tick (useful for testing)."""
+    config = Config().with_trading_mode(mode)
+    loop = AgentLoop(config)
+    loop.tick()
+
+
+@app.command()
+def status() -> None:
+    """Show current paper trading status (bankroll + open positions)."""
+    from agents.tracking.paper_trade import PaperTradeExecutor
+
+    paper = PaperTradeExecutor()
+    print(f"Paper bankroll: ${paper.get_bankroll():.2f}")
+    pprint(paper.get_positions())
+
+
+@app.command()
+def paper_resolve(market_id: str, outcome: str) -> None:
+    """Manually resolve a paper position and record results into performance tracking."""
+    from agents.tracking.paper_trade import PaperTradeExecutor
+    from agents.tracking.performance import PerformanceTracker
+
+    paper = PaperTradeExecutor()
+    pnl = paper.resolve_position(market_id, outcome=outcome)
+    print(f"Resolved {market_id} as {outcome.upper()}. Total P&L: ${pnl:.2f}")
+
+    tracker = PerformanceTracker()
+    resolved_trades = paper.get_trades(market_id=market_id, status="resolved")
+    for trade in resolved_trades:
+        tracker.record_bet_result(
+            f"paper:{trade['id']}",
+            pnl=float(trade.get("pnl") or 0.0),
+            market_id=str(trade.get("market_id") or ""),
+            direction=str(trade.get("direction") or ""),
+            amount=float(trade.get("amount_usd") or 0.0),
+            odds=float(trade.get("odds_at_execution") or 0.0),
+            outcome=str(trade.get("outcome") or ""),
+        )
+
+
+@app.command()
+def backtest(
+    strategy: str = "news_speed",
+    start: str = "2025-11-01",
+    end: str = "2025-12-01",
+    bankroll: float = 500.0,
+    allow_llm: bool = False,
+) -> None:
+    """
+    Run a historical backtest over `data/historical/`.
+
+    Note: `news_speed` calls an LLM; set `--allow-llm` only if you're OK with cost/latency.
+    """
+    start_dt = datetime.fromisoformat(start)
+    end_dt = datetime.fromisoformat(end)
+
+    config = Config()
+    strategy_name = strategy.strip().lower()
+    if strategy_name == "news_speed":
+        if not allow_llm:
+            raise typer.BadParameter("news_speed backtest requires LLM calls; pass --allow-llm to proceed.")
+        strat = NewsSpeedStrategy(config)
+    else:
+        raise typer.BadParameter(f"Unknown strategy: {strategy}")
+
+    runner = BacktestRunner(
+        strategy=strat,
+        start_date=start_dt,
+        end_date=end_dt,
+        initial_bankroll=bankroll,
+        config=config,
+    )
+    result = runner.run()
+    pprint(result)
 
 
 if __name__ == "__main__":

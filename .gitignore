@@ -1,4 +1,6 @@
 .venv
+.venv*/
+.venv*
 .env
 .idea
 .ipynb_checkpoints
@@ -27,3 +29,4 @@ archive.zip
 .cache
 .DS_Store
 local_db*
+.mcp.json
