@@ -43,7 +43,9 @@ class NewsAggregator:
                 "https://decrypt.co/feed",
             ],
         }
-        self.last_fetch_time: Optional[datetime] = None
+        # Default to "start from now" to avoid processing a large RSS backlog (and triggering many LLM calls)
+        # on first boot. For backfills, pass an explicit `since=` to `fetch_new_articles`.
+        self.last_fetch_time: Optional[datetime] = datetime.now(timezone.utc)
 
     def fetch_new_articles(self, since: Optional[datetime] = None) -> list[NewsArticle]:
         """Fetch articles newer than `since` timestamp."""
