@@ -6,12 +6,13 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from agents.application.kelly_sizing import calculate_bet_size
-from agents.connectors.news_sources import NewsAggregator
+from agents.connectors.news_sources import NewsAggregator, NewsArticle
 from agents.polymarket.gamma import GammaMarketClient
 from agents.strategies.news_speed import NewsSpeedStrategy
 from agents.strategies.risk_manager import RiskManager
 from agents.tracking.logger import BotLogger
 from agents.tracking.market_snapshot import MarketSnapshotter
+from agents.tracking.news_snapshot import NewsSnapshotter
 from agents.tracking.paper_trade import PaperTradeExecutor
 from agents.tracking.performance import PerformanceTracker
 from agents.utils.config import Config
@@ -43,6 +44,7 @@ class AgentLoop:
         self.risk = RiskManager(config)
         self.logger = BotLogger()
         self.snapshotter = MarketSnapshotter()
+        self.news_snapshotter = NewsSnapshotter()
         self._last_snapshot_date: Optional[str] = None
 
         self.paper = PaperTradeExecutor(db_path=paper_db_path, initial_bankroll=config.bankroll)
@@ -68,6 +70,7 @@ class AgentLoop:
             articles = self.news.fetch_new_articles()
             markets = self._fetch_markets()
             self._record_daily_snapshot(markets)
+            self._record_daily_news_snapshot(articles)
             signals = self.strategy.generate_signals(articles, markets)
 
             for signal in signals:
@@ -194,6 +197,9 @@ class AgentLoop:
             return
         self.snapshotter.record_daily_snapshot(markets)
         self._last_snapshot_date = today
+
+    def _record_daily_news_snapshot(self, articles: list[NewsArticle]) -> None:
+        self.news_snapshotter.record_daily_snapshot(articles)
 
     def _record_performance_for_market(self, market_id: str) -> None:
         trades = self.paper.get_trades(market_id=market_id, status="resolved")
