@@ -20,6 +20,7 @@ _DEFAULT_SETTINGS: Dict[str, Any] = {
     "polymarket": {
         "api_key": "${POLYMARKET_API_KEY}",
         "wallet_address": "${WALLET_ADDRESS}",
+        "market_fetch_limit": 200,
     },
     "trading": {
         "mode": "paper",

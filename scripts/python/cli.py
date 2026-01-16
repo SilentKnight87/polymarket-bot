@@ -156,6 +156,19 @@ def status() -> None:
     print(f"Paper bankroll: ${paper.get_bankroll():.2f}")
     pprint(paper.get_positions())
 
+@app.command()
+def snapshot() -> None:
+    """Record a daily market snapshot to data/historical/markets."""
+    from agents.tracking.market_snapshot import MarketSnapshotter
+    from agents.polymarket.gamma import GammaMarketClient
+
+    gamma = GammaMarketClient()
+    settings = Config().settings.get("polymarket", {})
+    limit = int(settings.get("market_fetch_limit", 200))
+    markets = gamma.get_clob_tradable_markets(limit=limit)
+    wrote = MarketSnapshotter().record_daily_snapshot(markets)
+    print("Snapshot written." if wrote else "Snapshot already exists for today.")
+
 
 @app.command()
 def paper_resolve(market_id: str, outcome: str) -> None:

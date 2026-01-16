@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import time
+from datetime import datetime, timezone
 from typing import Any, Optional
 
 from agents.application.kelly_sizing import calculate_bet_size
@@ -10,6 +11,7 @@ from agents.polymarket.gamma import GammaMarketClient
 from agents.strategies.news_speed import NewsSpeedStrategy
 from agents.strategies.risk_manager import RiskManager
 from agents.tracking.logger import BotLogger
+from agents.tracking.market_snapshot import MarketSnapshotter
 from agents.tracking.paper_trade import PaperTradeExecutor
 from agents.tracking.performance import PerformanceTracker
 from agents.utils.config import Config
@@ -40,6 +42,8 @@ class AgentLoop:
         self.strategy = NewsSpeedStrategy(config, llm=llm)
         self.risk = RiskManager(config)
         self.logger = BotLogger()
+        self.snapshotter = MarketSnapshotter()
+        self._last_snapshot_date: Optional[str] = None
 
         self.paper = PaperTradeExecutor(db_path=paper_db_path, initial_bankroll=config.bankroll)
         self.performance = PerformanceTracker(db_path=performance_db_path)
@@ -63,6 +67,7 @@ class AgentLoop:
         try:
             articles = self.news.fetch_new_articles()
             markets = self._fetch_markets()
+            self._record_daily_snapshot(markets)
             signals = self.strategy.generate_signals(articles, markets)
 
             for signal in signals:
@@ -145,8 +150,32 @@ class AgentLoop:
         raise NotImplementedError("Live trading not implemented in MVP.")
 
     def _check_resolutions(self) -> None:
-        # Placeholder: paper positions require resolution detection (Gamma endpoint / CLOB / manual feed).
-        return
+        if self.config.trading_mode != "paper":
+            return
+        positions = self.paper.get_positions()
+        if not positions:
+            return
+
+        resolutions: list[dict] = []
+        for position in positions:
+            market_id = position.market_id
+            try:
+                market = self.gamma.get_market(market_id)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("Failed to fetch market %s for resolution: %s", market_id, exc)
+                continue
+
+            resolution = self.snapshotter.detect_resolution(market)
+            if resolution is None:
+                continue
+
+            pnl = self.paper.resolve_position(market_id, resolution["outcome"])
+            logger.info("Resolved paper position %s (%s): P&L %.2f", market_id, resolution["outcome"], pnl)
+            self._record_performance_for_market(market_id)
+            resolutions.append(resolution)
+
+        if resolutions:
+            self.snapshotter.record_resolutions(resolutions)
 
     def _update_performance(self) -> None:
         metrics = self.performance.get_all_time_metrics()
@@ -159,3 +188,22 @@ class AgentLoop:
                 return market
         return None
 
+    def _record_daily_snapshot(self, markets: list[dict]) -> None:
+        today = datetime.now(timezone.utc).date().isoformat()
+        if self._last_snapshot_date == today:
+            return
+        self.snapshotter.record_daily_snapshot(markets)
+        self._last_snapshot_date = today
+
+    def _record_performance_for_market(self, market_id: str) -> None:
+        trades = self.paper.get_trades(market_id=market_id, status="resolved")
+        for trade in trades:
+            self.performance.record_bet_result(
+                f"paper:{trade['id']}",
+                pnl=float(trade.get("pnl") or 0.0),
+                market_id=str(trade.get("market_id") or ""),
+                direction=str(trade.get("direction") or ""),
+                amount=float(trade.get("amount_usd") or 0.0),
+                odds=float(trade.get("odds_at_execution") or 0.0),
+                outcome=str(trade.get("outcome") or ""),
+            )
