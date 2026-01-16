@@ -12,19 +12,21 @@
 |-------|------|-------|-------------|
 | 1 | [archive/phase1_infrastructure.md](archive/phase1_infrastructure.md) | 3 | Config, Logging, Data Models |
 | 2 | [archive/phase2_kelly_risk.md](archive/phase2_kelly_risk.md) | 2 | Kelly Sizing, Risk Manager |
-| 3 | [phase3_news.md](phase3_news.md) | 1 | News Sources (RSS) |
-| 4 | [phase4_signals.md](phase4_signals.md) | 2 | Base Strategy, News Speed Strategy |
-| 5 | [phase5_agent_loop.md](phase5_agent_loop.md) | 2 | Agent Loop, CLI Entry Point |
-| 6 | [phase6_paper_trading.md](phase6_paper_trading.md) | 1 | Paper Trade Executor |
-| 7 | [phase7_performance.md](phase7_performance.md) | 1 | Performance Tracker |
-| 8 | [phase8_backtesting.md](phase8_backtesting.md) | 1 | Backtest Runner |
+| 3 | [archive/phase3_news.md](archive/phase3_news.md) | 1 | News Sources (RSS) |
+| 4 | [archive/phase4_signals.md](archive/phase4_signals.md) | 2 | Base Strategy, News Speed Strategy |
+| 5 | [archive/phase5_agent_loop.md](archive/phase5_agent_loop.md) | 2 | Agent Loop, CLI Entry Point |
+| 6 | [archive/phase6_paper_trading.md](archive/phase6_paper_trading.md) | 1 | Paper Trade Executor |
+| 7 | [archive/phase7_performance.md](archive/phase7_performance.md) | 1 | Performance Tracker |
+| 8 | [archive/phase8_backtesting.md](archive/phase8_backtesting.md) | 1 | Backtest Runner |
+| 9 | [archive/phase9_snapshots.md](archive/phase9_snapshots.md) | 1 | Daily Market Snapshots + Resolutions |
+| 10 | [phase10_news_snapshots.md](phase10_news_snapshots.md) | 1 | Daily News Snapshots (Backtest Data) |
 
-**Total: 13 Tasks**
+**Total: 15 Tasks**
 
-## Current Status (as of 2026-01-15)
+## Current Status (as of 2026-01-16)
 
-- Completed: Phases 1–3 (config/logging/models, kelly/risk, RSS news ingestion)
-- Next: Phase 4 (signal generation + news speed strategy)
+- Completed: Phases 1–9 (core trading MVP + snapshots/resolutions)
+- Next: Phase 10 (daily news snapshots for backtest data)
 
 ---
 
@@ -64,6 +66,14 @@ Kelly/Risk   News
          ▼
       Phase 8
    Backtesting
+         │
+         ▼
+      Phase 9
+  Snapshots/Resolutions
+         │
+         ▼
+     Phase 10
+   News Snapshots
 ```
 
 ---
