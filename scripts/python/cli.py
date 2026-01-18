@@ -4,15 +4,17 @@ from devtools import pprint
 from agents.polymarket.polymarket import Polymarket
 from agents.connectors.chroma import PolymarketRAG
 from agents.connectors.news import News
+from agents.connectors.news_sources import NewsAggregator
 from agents.application.trade import Trader
 from agents.application.executor import Executor
 from agents.application.creator import Creator
 from agents.application.agent_loop import AgentLoop
 from agents.tracking.backtest import BacktestRunner
+from agents.tracking.news_snapshot import NewsSnapshotter
 from agents.strategies.news_speed import NewsSpeedStrategy
 from agents.utils.config import Config
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 app = typer.Typer()
 polymarket = Polymarket()
@@ -168,6 +170,18 @@ def snapshot() -> None:
     markets = gamma.get_clob_tradable_markets(limit=limit)
     wrote = MarketSnapshotter().record_daily_snapshot(markets)
     print("Snapshot written." if wrote else "Snapshot already exists for today.")
+
+
+@app.command()
+def news_snapshot() -> None:
+    """Record a daily news snapshot to data/historical/news."""
+    config = Config()
+    aggregator = NewsAggregator(config)
+    snapshotter = NewsSnapshotter()
+    since = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    articles = aggregator.fetch_new_articles(since=since)
+    wrote = snapshotter.record_daily_snapshot(articles, snapshot_date=since.date())
+    print("News snapshot written." if wrote else "No new articles to snapshot.")
 
 
 @app.command()
