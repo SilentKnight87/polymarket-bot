@@ -20,13 +20,14 @@
 | 8 | [archive/phase8_backtesting.md](archive/phase8_backtesting.md) | 1 | Backtest Runner |
 | 9 | [archive/phase9_snapshots.md](archive/phase9_snapshots.md) | 1 | Daily Market Snapshots + Resolutions |
 | 10 | [archive/phase10_news_snapshots.md](archive/phase10_news_snapshots.md) | 1 | Daily News Snapshots (Backtest Data) |
+| 11 | [archive/phase11_model_evaluation.md](archive/phase11_model_evaluation.md) | 1 | Model Selection Evaluation Framework |
 
-**Total: 15 Tasks**
+**Total: 16 Tasks**
 
 ## Current Status (as of 2026-01-24)
 
-- Completed: Phases 1–10 (core trading MVP + market/news snapshots)
-- All planned phases complete!
+- Completed: Phases 1–11 (core trading MVP + model evaluation framework)
+- MVP complete! Post-MVP enhancement (Phase 11) added for model comparison.
 
 ---
 

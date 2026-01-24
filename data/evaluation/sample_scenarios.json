@@ -1,0 +1,138 @@
+{
+  "description": "Sample evaluation scenarios for model comparison",
+  "note": "These are realistic but hypothetical scenarios for testing. Replace with actual historical data for production evaluation.",
+  "scenarios": [
+    {
+      "scenario_id": "politics-001",
+      "news_headline": "Senate passes bipartisan infrastructure bill with 69-30 vote",
+      "news_summary": "The U.S. Senate passed a $1.2 trillion infrastructure bill with bipartisan support, sending it to the House where Speaker promises swift action.",
+      "market_question": "Will the Infrastructure Bill be signed into law by end of Q4?",
+      "market_yes_price": 0.72,
+      "market_no_price": 0.28,
+      "actual_outcome": "YES",
+      "category": "politics",
+      "resolution_date": "2025-12-31"
+    },
+    {
+      "scenario_id": "politics-002",
+      "news_headline": "Presidential approval rating drops to 38% in latest poll",
+      "news_summary": "Major polling firm reports presidential approval at 38%, down 5 points from last month. Economic concerns cited as primary driver.",
+      "market_question": "Will President's approval rating be above 45% on January 1st?",
+      "market_yes_price": 0.55,
+      "market_no_price": 0.45,
+      "actual_outcome": "NO",
+      "category": "politics",
+      "resolution_date": "2026-01-01"
+    },
+    {
+      "scenario_id": "crypto-001",
+      "news_headline": "SEC approves first spot Bitcoin ETF applications",
+      "news_summary": "Securities and Exchange Commission has granted approval to multiple spot Bitcoin ETF applications, marking a historic regulatory milestone.",
+      "market_question": "Will Bitcoin exceed $100,000 by end of January 2026?",
+      "market_yes_price": 0.42,
+      "market_no_price": 0.58,
+      "actual_outcome": "YES",
+      "category": "crypto",
+      "resolution_date": "2026-01-31"
+    },
+    {
+      "scenario_id": "crypto-002",
+      "news_headline": "Major exchange announces temporary withdrawal halt",
+      "news_summary": "Leading cryptocurrency exchange suspends withdrawals citing 'scheduled maintenance' amid reports of unusual wallet activity.",
+      "market_question": "Will the exchange resume normal operations within 48 hours?",
+      "market_yes_price": 0.65,
+      "market_no_price": 0.35,
+      "actual_outcome": "YES",
+      "category": "crypto",
+      "resolution_date": "2026-01-10"
+    },
+    {
+      "scenario_id": "sports-001",
+      "news_headline": "Star quarterback ruled out for remainder of season with ACL injury",
+      "news_summary": "Team's franchise quarterback confirmed out for season after MRI reveals torn ACL. Backup quarterback will start in playoff games.",
+      "market_question": "Will the team win the Super Bowl this season?",
+      "market_yes_price": 0.35,
+      "market_no_price": 0.65,
+      "actual_outcome": "NO",
+      "category": "sports",
+      "resolution_date": "2026-02-15"
+    },
+    {
+      "scenario_id": "sports-002",
+      "news_headline": "Tennis star wins semifinal in straight sets at Australian Open",
+      "news_summary": "World number 2 dominates semifinal match 6-2, 6-3, 6-4, advancing to final against defending champion.",
+      "market_question": "Will the world number 2 win the Australian Open?",
+      "market_yes_price": 0.58,
+      "market_no_price": 0.42,
+      "actual_outcome": "YES",
+      "category": "sports",
+      "resolution_date": "2026-01-28"
+    },
+    {
+      "scenario_id": "tech-001",
+      "news_headline": "Apple announces next iPhone launch event scheduled for September",
+      "news_summary": "Apple sends media invitations for September 12th event with tagline 'It's Glowtime', strongly hinting at iPhone 17 announcement.",
+      "market_question": "Will Apple announce iPhone 17 in September?",
+      "market_yes_price": 0.92,
+      "market_no_price": 0.08,
+      "actual_outcome": "YES",
+      "category": "tech",
+      "resolution_date": "2025-09-30"
+    },
+    {
+      "scenario_id": "tech-002",
+      "news_headline": "Nvidia reports Q3 earnings miss, guidance below expectations",
+      "news_summary": "Nvidia reports revenue of $28B vs $30B expected. CEO cites 'demand normalization' and provides cautious Q4 outlook.",
+      "market_question": "Will Nvidia stock close above $140 by end of month?",
+      "market_yes_price": 0.45,
+      "market_no_price": 0.55,
+      "actual_outcome": "NO",
+      "category": "tech",
+      "resolution_date": "2025-11-30"
+    },
+    {
+      "scenario_id": "economics-001",
+      "news_headline": "Fed signals potential rate cut at December meeting",
+      "news_summary": "Federal Reserve Chair indicates 'meaningful progress' on inflation, suggesting rate cut likely at upcoming FOMC meeting.",
+      "market_question": "Will the Fed cut rates at December FOMC meeting?",
+      "market_yes_price": 0.78,
+      "market_no_price": 0.22,
+      "actual_outcome": "YES",
+      "category": "economics",
+      "resolution_date": "2025-12-18"
+    },
+    {
+      "scenario_id": "economics-002",
+      "news_headline": "Unemployment rate rises to 4.2% in latest jobs report",
+      "news_summary": "Bureau of Labor Statistics reports unemployment increased to 4.2%, with job gains slowing across most sectors.",
+      "market_question": "Will unemployment exceed 4.5% by end of Q1 2026?",
+      "market_yes_price": 0.32,
+      "market_no_price": 0.68,
+      "actual_outcome": "NO",
+      "category": "economics",
+      "resolution_date": "2026-03-31"
+    },
+    {
+      "scenario_id": "geopolitics-001",
+      "news_headline": "Peace talks between warring nations show 'significant progress'",
+      "news_summary": "Mediators report breakthrough in negotiations, with ceasefire agreement expected within days according to diplomatic sources.",
+      "market_question": "Will ceasefire be announced before end of January?",
+      "market_yes_price": 0.65,
+      "market_no_price": 0.35,
+      "actual_outcome": "YES",
+      "category": "geopolitics",
+      "resolution_date": "2026-01-31"
+    },
+    {
+      "scenario_id": "geopolitics-002",
+      "news_headline": "Trade negotiations stall as tariff threats escalate",
+      "news_summary": "Major trading partners fail to reach agreement, with new tariffs set to take effect next week. Markets react negatively.",
+      "market_question": "Will new tariffs be implemented as scheduled?",
+      "market_yes_price": 0.72,
+      "market_no_price": 0.28,
+      "actual_outcome": "YES",
+      "category": "geopolitics",
+      "resolution_date": "2026-02-01"
+    }
+  ]
+}

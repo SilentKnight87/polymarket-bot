@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-01-24T22:22:02.738647+00:00",
+  "num_scenarios": 12,
+  "results": [
+    {
+      "model": "gpt-4o",
+      "brier_score": 0.18919999999999998,
+      "calibration_error": 0.36,
+      "accuracy": 0.9166666666666666,
+      "avg_confidence": 8,
+      "avg_latency_ms": 2814.9104548344135,
+      "p95_latency_ms": 4468.252541992115,
+      "total_cost_usd": 0.0,
+      "category_brier": {
+        "politics": 0.25625,
+        "crypto": 0.14125000000000001,
+        "sports": 0.42249999999999993,
+        "tech": 0.06144999999999999,
+        "economics": 0.22250000000000003,
+        "geopolitics": 0.031249999999999993
+      },
+      "category_accuracy": {
+        "politics": 1.0,
+        "crypto": 0.5,
+        "sports": 1.0,
+        "tech": 1.0,
+        "economics": 1.0,
+        "geopolitics": 1.0
+      },
+      "num_predictions": 12
+    },
+    {
+      "model": "claude-sonnet-4",
+      "brier_score": 1.0,
+      "calibration_error": 1.0,
+      "accuracy": 0.0,
+      "avg_confidence": 0.0,
+      "avg_latency_ms": 0.0,
+      "p95_latency_ms": 0.0,
+      "total_cost_usd": 0.0,
+      "category_brier": {},
+      "category_accuracy": {},
+      "num_predictions": 0
+    },
+    {
+      "model": "grok-4",
+      "brier_score": 1.0,
+      "calibration_error": 1.0,
+      "accuracy": 0.0,
+      "avg_confidence": 0.0,
+      "avg_latency_ms": 0.0,
+      "p95_latency_ms": 0.0,
+      "total_cost_usd": 0.0,
+      "category_brier": {},
+      "category_accuracy": {},
+      "num_predictions": 0
+    }
+  ]
+}

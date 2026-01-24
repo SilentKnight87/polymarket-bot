@@ -37,8 +37,8 @@ If YES price + NO price < $1.00
 **Validation Notes (2026-01-15):**
 - "YES + NO < $1" only implies a lock-in if you can fill both legs at those prices and your all-in cost is < $1 *after* fees; on an order book this usually means `best_ask_yes + best_ask_no + fees < 1.0` (and sufficient size available at those asks).
 - Fees are market/product-dependent; incorporate *taker fees*, any settlement/market fees, and slippage into the arbitrage threshold.
-- Main failure modes: partial fills, queue position/latency, and “looks like < 1” due to tiny size at top-of-book.
-- Capital is tied up until resolution, so even “guaranteed” profit can be a low annualized return unless turnover is high.
+- Main failure modes: partial fills, queue position/latency, and "looks like < 1" due to tiny size at top-of-book.
+- Capital is tied up until resolution, so even "guaranteed" profit can be a low annualized return unless turnover is high.
 
 **Measurement Plan (lightweight, no trading):**
 - Build a scanner that periodically pulls order books for a universe of markets and logs occurrences where `best_ask_yes + best_ask_no < 1 - fee_buffer`, along with available size and how long it persists.
@@ -86,7 +86,7 @@ News Article
 **Why Defer:** Adds latency and cost. Validate single-model approach first, add consensus if edge needs improvement.
 
 **Validation Notes (2026-01-15):**
-- For a “news speed” strategy, multi-model calls can kill latency; if we use an ensemble, prefer a *cascaded* design:
+- For a "news speed" strategy, multi-model calls can kill latency; if we use an ensemble, prefer a *cascaded* design:
   - fast/cheap model for (1) market retrieval + (2) coarse direction,
   - slower/stronger model only for the top K candidates (probability + reasoning),
   - optional second opinion only when edge is large enough to justify latency/cost.
@@ -100,7 +100,7 @@ News Article
 
 ### 3. Model Selection for Prediction Markets
 
-**Status:** Active Research
+**Status:** ✅ Evaluation Framework Complete (2026-01-24)
 
 **Context:** Different benchmarks show different winners:
 - **Alpha Arena (stock trading):** Grok 4.2 won (+12% return)
@@ -115,24 +115,49 @@ News Article
 **Models to Evaluate:**
 | Model | Availability | Notes |
 |-------|--------------|-------|
-| Claude Opus 4.5 | API | Strong reasoning, our default |
-| Claude Sonnet 4 | API | Faster, cheaper |
-| GPT-4o | API | Good baseline |
-| Grok 4 | api.x.ai | Won stock trading benchmark |
-| Grok 4 Fast | api.x.ai (free tier) | Speed optimized |
+| Claude Opus 4.5 | API | Strong reasoning, $15/$75 per 1M tokens |
+| Claude Sonnet 4 | API | Faster, cheaper, $3/$15 per 1M tokens |
+| GPT-4o | API | Good baseline, $2.50/$10 per 1M tokens |
+| Grok 4 | api.x.ai | Won stock trading benchmark, $3/$15 per 1M tokens |
+| Grok 4 Fast | api.x.ai (free tier) | Speed optimized, FREE |
 
 **Research Questions:**
-- [ ] Can we build a simple eval comparing models on probability estimation?
+- [x] Can we build a simple eval comparing models on probability estimation?
 - [ ] Is stock trading performance predictive of prediction market performance?
-- [ ] What's the cost/latency trade-off for each model?
+- [x] What's the cost/latency trade-off for each model?
+
+**Implementation (2026-01-24):**
+
+Evaluation framework built in Phase 11:
+- `agents/evaluation/llm_providers.py` - Unified LLM interface for all providers
+- `agents/evaluation/model_evaluator.py` - Brier score, accuracy, latency, cost metrics
+- `data/evaluation/sample_scenarios.json` - 12 sample scenarios across 6 categories
+- `scripts/python/evaluate_models.py` - CLI for running comparisons
+
+**How to Run:**
+```bash
+# Compare default models (gpt-4o vs claude-sonnet-4)
+PYTHONPATH=. python scripts/python/evaluate_models.py
+
+# Compare specific models
+PYTHONPATH=. python scripts/python/evaluate_models.py --models gpt-4o grok-4 claude-sonnet-4
+
+# With cost control (limit scenarios)
+PYTHONPATH=. python scripts/python/evaluate_models.py --max-scenarios 5
+```
+
+**Next Steps:**
+1. Collect larger dataset of real historical Polymarket resolutions
+2. Run live comparison with all models
+3. Document findings and select optimal model for production
 
 **Validation Notes (2026-01-15):**
 - Use prediction-market-specific metrics (not stock-trading leaderboards):
   - Calibration (Brier score) vs market-implied probability at decision time
-  - “Would-have-traded” P&L in paper/backtest (after fees + slippage assumptions)
+  - "Would-have-traded" P&L in paper/backtest (after fees + slippage assumptions)
   - Latency (p50/p95 end-to-end) and token cost per actionable signal
 
-**Current Plan:** Start with OpenAI GPT (repo default), add model comparison later if needed.
+**Current Status:** Framework ready. Need to run live evaluation with real API calls.
 
 ---
 
