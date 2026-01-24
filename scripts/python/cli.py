@@ -171,6 +171,30 @@ def snapshot() -> None:
 
 
 @app.command()
+def news_snapshot() -> None:
+    """Fetch current news and record to data/historical/news for backtesting."""
+    from agents.connectors.news_sources import NewsAggregator
+    from agents.tracking.news_snapshot import NewsSnapshotter
+
+    config = Config()
+    aggregator = NewsAggregator(config)
+    # Force fetch from beginning of time to capture all available articles
+    aggregator.last_fetch_time = None
+    articles = aggregator.fetch_new_articles()
+
+    if not articles:
+        print("No articles fetched from RSS feeds.")
+        return
+
+    snapshotter = NewsSnapshotter()
+    wrote = snapshotter.record_daily_snapshot(articles)
+    if wrote:
+        print(f"News snapshot updated with {len(articles)} articles.")
+    else:
+        print("No new articles to add (all already captured).")
+
+
+@app.command()
 def paper_resolve(market_id: str, outcome: str) -> None:
     """Manually resolve a paper position and record results into performance tracking."""
     from agents.tracking.paper_trade import PaperTradeExecutor

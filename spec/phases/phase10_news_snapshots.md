@@ -43,9 +43,9 @@ class NewsSnapshotter:
 ```
 
 **Success criteria:**
-- [ ] Daily file written once per UTC day
-- [ ] New articles appended without duplicates
-- [ ] Works with live loop + manual CLI command
+- [x] Daily file written once per UTC day
+- [x] New articles appended without duplicates
+- [x] Works with live loop + manual CLI command
 
 ---
 
