@@ -19,7 +19,7 @@
 | 7 | [archive/phase7_performance.md](archive/phase7_performance.md) | 1 | Performance Tracker |
 | 8 | [archive/phase8_backtesting.md](archive/phase8_backtesting.md) | 1 | Backtest Runner |
 | 9 | [archive/phase9_snapshots.md](archive/phase9_snapshots.md) | 1 | Daily Market Snapshots + Resolutions |
-| 10 | [phase10_news_snapshots.md](phase10_news_snapshots.md) | 1 | Daily News Snapshots (Backtest Data) |
+| 10 | [archive/phase10_news_snapshots.md](archive/phase10_news_snapshots.md) | 1 | Daily News Snapshots (Backtest Data) |
 
 **Total: 15 Tasks**
 
